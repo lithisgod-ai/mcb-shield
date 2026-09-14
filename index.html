@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCB-SHIELD | PARADOX</title>
+<style>
+:root{
+  --bg:#08111f; --panel:#0f1b2d; --panel2:#13233a; --text:#edf4ff;
+  --muted:#8fa4bf; --line:#233650; --accent:#38bdf8; --good:#34d399;
+  --bad:#fb7185; --warn:#fbbf24;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(135deg,#07101d,#0b1627 55%,#091321);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,select,input{font:inherit}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.sidebar{border-right:1px solid var(--line);background:#091523;padding:24px 16px;position:sticky;top:0;height:100vh}
+.logo{font-size:23px;font-weight:900;letter-spacing:.08em}
+.logo span{color:var(--accent)}
+.team{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:.12em}
+.nav{margin-top:38px;display:grid;gap:8px}
+.nav button{border:0;background:transparent;color:var(--muted);padding:12px 13px;text-align:left;border-radius:9px;cursor:pointer}
+.nav button.active,.nav button:hover{background:var(--panel2);color:var(--text)}
+.safety{position:absolute;bottom:20px;left:16px;right:16px;border:1px solid #28425c;border-radius:12px;padding:12px;background:#0d1a2a;font-size:11px;color:var(--muted)}
+.main{padding:28px;max-width:1500px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}
+h1{font-size:27px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:5px}
+.status{display:flex;align-items:center;gap:9px;color:var(--good);font-size:12px;font-weight:700}
+.dot{width:9px;height:9px;background:var(--good);border-radius:50%;box-shadow:0 0 12px var(--good)}
+.grid{display:grid;gap:16px}.setup{grid-template-columns:1.1fr .9fr}
+.panel{background:rgba(15,27,45,.9);border:1px solid var(--line);border-radius:15px;padding:20px;box-shadow:0 10px 30px #0002}
+.title{font-size:14px;font-weight:800;letter-spacing:.04em;margin-bottom:16px}.eyebrow{font-size:10px;color:var(--accent);font-weight:800;letter-spacing:.14em}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:7px}
+select,input{width:100%;background:#0a1625;border:1px solid var(--line);color:var(--text);padding:11px;border-radius:9px;outline:none}
+select:focus,input:focus{border-color:var(--accent)}
+.actions{display:flex;gap:10px;margin-top:16px}
+.btn{border:0;border-radius:9px;padding:12px 17px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#04111c}.secondary{background:#18283e;color:var(--text);border:1px solid var(--line)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.readings{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.metric{background:#0b1727;border:1px solid var(--line);padding:14px;border-radius:11px}.metric small{display:block;color:var(--muted);font-size:10px}.metric strong{display:block;font-size:20px;margin-top:6px}
+.wave{margin-top:16px}.wave svg{width:100%;height:310px;background:#091523;border:1px solid var(--line);border-radius:12px}
+.legend{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:7px}
+.progress{height:7px;background:#17273b;border-radius:99px;overflow:hidden;margin-top:15px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.statusline{display:flex;justify-content:space-between;align-items:center;margin-top:13px;font-size:12px;color:var(--muted)}
+.badge{padding:5px 9px;border-radius:99px;font-size:10px;font-weight:900}.pass{background:#0d382e;color:var(--good)}.fail{background:#3d1821;color:var(--bad)}.ready{background:#25344a;color:#a9bdd6}
+.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:12px}th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.note{color:var(--muted);font-size:10px;line-height:1.5;margin-top:13px}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.safety{display:none}.nav{margin-top:18px;grid-template-columns:repeat(3,1fr)}.setup{grid-template-columns:1fr}.main{padding:17px}.form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">MCB<span>-SHIELD</span></div>
+  <div class="team">PARADOX • DIGITAL TWIN</div>
+  <div class="nav">
+    <button class="active">Dashboard</button>
+    <button onclick="document.getElementById('setup').scrollIntoView({behavior:'smooth'})">Test Setup</button>
+    <button onclick="document.getElementById('history').scrollIntoView({behavior:'smooth'})">Results</button>
+  </div>
+  <div class="safety"><b>SIMULATION MODE</b><br><br>This website generates illustrative data only. It does not control or measure real electrical equipment.</div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div><h1>Automated MCB Test Simulator</h1><div class="sub">IEC-inspired digital demonstration • Household & Commercial scenarios</div></div>
+    <div class="status"><span class="dot"></span>ONLINE SIMULATOR</div>
+  </div>
+
+  <section id="setup" class="grid setup">
+    <div class="panel">
+      <div class="eyebrow">01 • TEST CONFIGURATION</div>
+      <div class="title">Select the test subject</div>
+      <div class="form">
+        <div class="field"><label>BUILDING TYPE</label>
+          <select id="building">
+            <option value="household">Household</option>
+            <option value="commercial">Commercial Building</option>
+          </select>
+        </div>
+        <div class="field"><label>MCB TYPE</label>
+          <select id="poles">
+            <option>SP</option><option>DP</option><option>TP</option><option>FP</option>
+          </select>
+        </div>
+        <div class="field"><label>MCB RATING</label>
+          <select id="rating"></select>
+        </div>
+        <div class="field"><label>APPLIED VOLTAGE</label>
+          <select id="voltage"></select>
+        </div>
+        <div class="field"><label>TEST SUBJECT ID</label>
+          <input id="testId" value="T-001">
+        </div>
+        <div class="field"><label>SIMULATION PROFILE</label>
+          <select id="profile"><option>Standard Fault</option><option>Fast Trip</option><option>Severe Fault</option></select>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="start" onclick="runTest()">START TEST</button>
+        <button class="btn secondary" onclick="resetTest()">RESET</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="eyebrow">02 • LIVE READINGS</div>
+      <div class="title">Simulation output</div>
+      <div class="readings">
+        <div class="metric"><small>BUILDING</small><strong id="outBuilding">Household</strong></div>
+        <div class="metric"><small>VOLTAGE</small><strong id="outVoltage">230 V</strong></div>
+        <div class="metric"><small>MCB</small><strong id="outMcb">16 A SP</strong></div>
+        <div class="metric"><small>FAULT CURRENT</small><strong id="outCurrent">—</strong></div>
+        <div class="metric"><small>TRIP TIME</small><strong id="outTrip">—</strong></div>
+        <div class="metric"><small>RESULT</small><strong id="outResult">READY</strong></div>
+      </div>
+      <div class="progress"><i id="bar"></i></div>
+      <div class="statusline"><span id="phase">Waiting for test configuration</span><span id="badge" class="badge ready">READY</span></div>
+    </div>
+  </section>
+
+  <section class="panel wave">
+    <div class="eyebrow">03 • DYNAMIC WAVEFORM</div>
+    <div class="title">Simulated fault current vs time</div>
+    <svg id="chart" viewBox="0 0 1000 330" preserveAspectRatio="none"></svg>
+    <div class="legend"><span>Current (simulated)</span><span>Trip point: <b id="tripLabel">—</b></span><span>Time →</span></div>
+  </section>
+
+  <section id="history" class="panel" style="margin-top:16px">
+    <div class="eyebrow">04 • TEST HISTORY</div>
+    <div class="title">Completed simulations</div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Time</th><th>ID</th><th>Building</th><th>MCB</th><th>Voltage</th><th>Fault Current</th><th>Trip</th><th>Result</th></tr></thead>
+        <tbody id="historyBody"><tr><td colspan="8" style="color:#8fa4bf;text-align:center">No simulations completed.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="note">SIMULATED / DEMO DATA. This browser application is a digital demonstration only and should not be treated as a real electrical test controller, measurement system, or safety certification tool.</div>
+  </section>
+</main>
+</div>
+
+<script>
+const configs={
+ household:{voltages:[120,230,240], ratings:[6,10,16,20,32,40,63]},
+ commercial:{voltages:[230,240,400,415], ratings:[16,20,32,40,63]}
+};
+let history=[], running=false, cfg=null;
+
+const $=id=>document.getElementById(id);
+function populate(){
+  const building=$('building').value;
+  $('voltage').innerHTML=configs[building].voltages.map(v=>`<option>${v} V</option>`).join('');
+  $('rating').innerHTML=configs[building].ratings.map(v=>`<option>${v} A</option>`).join('');
+  updatePreview();
+}
+function updatePreview(){
+  const b=$('building').value, v=parseInt($('voltage').value), r=parseInt($('rating').value), p=$('poles').value;
+  $('outBuilding').textContent=b==='household'?'Household':'Commercial';
+  $('outVoltage').textContent=v+' V';
+  $('outMcb').textContent=r+' A '+p;
+  drawChart(0);
+}
+function simulatedConfig(){
+  const b=$('building').value, v=parseInt($('voltage').value), r=parseInt($('rating').value);
+  const p=$('profile').value;
+  let multiplier=b==='commercial'?1.12:0.92;
+  if(p==='Fast Trip') multiplier*=1.06;
+  if(p==='Severe Fault') multiplier*=1.20;
+  const current=Math.min(9.8, (r/16)*(v/230)*multiplier + 1.25);
+  const trip=(p==='Fast Trip'?15.5:p==='Severe Fault'?18.5:21.5) + (r>40?5:0) + (b==='commercial'?2:0);
+  const pass=trip<30;
+  return {building:b,voltage:v,rating:r,poles:$('poles').value,current,trip,pass};
+}
+function waveValue(t,c,progress){
+  if(t>c.trip) return c.current*.12*Math.exp(-(t-c.trip)/7);
+  const rise=Math.min(1,t/8);
+  const ripple=.88+.12*Math.sin(t*2.7);
+  return c.current*rise*ripple;
+}
+function drawChart(progress=1){
+  const svg=$('chart'), W=1000,H=330,L=62,R=24,T=22,B=45,pw=W-L-R,ph=H-T-B;
+  const c=cfg||{current:5,trip:20};
+  let d='';
+  for(let i=0;i<=220;i++){
+    const t=i/220*40, x=L+t/40*pw;
+    const yv=progress>0 && t/40<=progress ? waveValue(t,c,progress) : 0;
+    const y=T+ph-(yv/Math.max(c.current,1))*ph*.86;
+    d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)+' ';
+  }
+  const tx=L+(c.trip/40)*pw;
+  svg.innerHTML=`
+  <rect x="${L}" y="${T}" width="${pw}" height="${ph}" rx="10" fill="#07111e" stroke="#233650"/>
+  ${[.25,.5,.75].map(q=>`<line x1="${L}" y1="${T+ph*q}" x2="${L+pw}" y2="${T+ph*q}" stroke="#233650"/>`).join('')}
+  <path d="${d}" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+  <line x1="${tx}" y1="${T}" x2="${tx}" y2="${T+ph}" stroke="#fbbf24" stroke-width="2" stroke-dasharray="8 7"/>
+  <text x="${tx+8}" y="${T+18}" fill="#fbbf24" font-size="13">Trip point</text>
+  <text x="${L}" y="${H-13}" fill="#8fa4bf" font-size="12">0 ms</text>
+  <text x="${L+pw/2-15}" y="${H-13}" fill="#8fa4bf" font-size="12">20 ms</text>
+  <text x="${L+pw-38}" y="${H-13}" fill="#8fa4bf" font-size="12">40 ms</text>
+  <text x="10" y="${T+10}" fill="#8fa4bf" font-size="12">kA</text>`;
+}
+function setPhase(text,pct){
+  $('phase').textContent=text;$('bar').style.width=pct+'%';
+}
+async function runTest(){
+  if(running)return;
+  running=true;
+  cfg=simulatedConfig();
+  const id=$('testId').value.trim()||'T-'+String(history.length+1).padStart(3,'0');
+  $('start').disabled=true;$('start').textContent='TEST RUNNING…';
+  $('outCurrent').textContent=cfg.current.toFixed(2)+' kA';
+  $('outTrip').textContent=cfg.trip.toFixed(1)+' ms';
+  $('tripLabel').textContent=cfg.trip.toFixed(1)+' ms';
+  const steps=[['SAFETY CHECK',12],['VOLTAGE CONFIGURED',28],['READY',42],['FAULT SIMULATED',62],['DATA CAPTURE',80],['ANALYSIS',94],[cfg.pass?'PASS':'FAIL',100]];
+  for(const [label,pct] of steps){
+    setPhase(label,pct);
+    drawChart(pct/100);
+    await new Promise(r=>setTimeout(r,650));
+  }
+  $('outResult').textContent=cfg.pass?'PASS':'FAIL';
+  $('badge').textContent=cfg.pass?'PASS':'FAIL';
+  $('badge').className='badge '+(cfg.pass?'pass':'fail');
+  history.unshift({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),id,
+    building:cfg.building==='household'?'Household':'Commercial',mcb:cfg.rating+' A '+cfg.poles,
+    voltage:cfg.voltage+' V',current:cfg.current.toFixed(2)+' kA',trip:cfg.trip.toFixed(1)+' ms',pass:cfg.pass});
+  renderHistory();
+  running=false;$('start').disabled=false;$('start').textContent='START TEST';
+}
+function resetTest(){
+  if(running)return;
+  cfg=null;$('outCurrent').textContent='—';$('outTrip').textContent='—';$('outResult').textContent='READY';
+  $('badge').textContent='READY';$('badge').className='badge ready';$('tripLabel').textContent='—';setPhase('Waiting for test configuration',0);drawChart(0);
+}
+function renderHistory(){
+  $('historyBody').innerHTML=history.length?history.map(x=>`<tr><td>${x.time}</td><td>${x.id}</td><td>${x.building}</td><td>${x.mcb}</td><td>${x.voltage}</td><td>${x.current}</td><td>${x.trip}</td><td><span class="badge ${x.pass?'pass':'fail'}">${x.pass?'PASS':'FAIL'}</span></td></tr>`).join(''):`<tr><td colspan="8" style="color:#8fa4bf;text-align:center">No simulations completed.</td></tr>`;
+}
+$('building').addEventListener('change',populate);
+$('voltage').addEventListener('change',updatePreview);
+$('rating').addEventListener('change',updatePreview);
+$('poles').addEventListener('change',updatePreview);
+populate();
+</script>
+</body>
+</html>
