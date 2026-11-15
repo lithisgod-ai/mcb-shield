@@ -3,7 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MCB-SHIELD | PARADOX</title>
+<title>MCB Shield | MCB Test Simulator &amp; Digital Twin</title>
+<meta name="description" content="MCB Shield is an interactive MCB test simulator. Explore single and multi-breaker simulations with live graphs, supply diagrams, and test results.">
+<meta name="keywords" content="MCB Shield, MCB simulator, miniature circuit breaker simulator, MCB test simulator, electrical protection learning">
+<meta name="robots" content="index, follow">
+<meta name="application-name" content="MCB Shield">
+<meta name="theme-color" content="#08111f">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MCB Shield">
+<meta property="og:title" content="MCB Shield | MCB Test Simulator">
+<meta property="og:description" content="Explore interactive MCB simulations with individual breaker graphs, conceptual supply diagrams, and batch test results.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MCB Shield | MCB Test Simulator">
+<meta name="twitter:description" content="Explore interactive MCB simulations with individual breaker graphs, conceptual supply diagrams, and batch test results.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MCB Shield",
+  "alternateName": "MCB Shield MCB Test Simulator",
+  "description": "An interactive educational MCB simulator featuring individual breaker graphs, conceptual supply diagrams, and sequential or concurrent batch simulations.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Any",
+  "isAccessibleForFree": true
+}
+</script>
 <style>
 :root{
   --bg:#08111f; --panel:#0f1b2d; --panel2:#13233a; --text:#edf4ff;
@@ -37,21 +61,32 @@ select:focus,input:focus{border-color:var(--accent)}
 .btn{border:0;border-radius:9px;padding:12px 17px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#04111c}.secondary{background:#18283e;color:var(--text);border:1px solid var(--line)}.btn:disabled{opacity:.45;cursor:not-allowed}
 .readings{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .metric{background:#0b1727;border:1px solid var(--line);padding:14px;border-radius:11px}.metric small{display:block;color:var(--muted);font-size:10px}.metric strong{display:block;font-size:20px;margin-top:6px}
-.wave{margin-top:16px}.wave svg{width:100%;height:310px;background:#091523;border:1px solid var(--line);border-radius:12px}
-.legend{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:7px}
 .progress{height:7px;background:#17273b;border-radius:99px;overflow:hidden;margin-top:15px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
 .statusline{display:flex;justify-content:space-between;align-items:center;margin-top:13px;font-size:12px;color:var(--muted)}
 .badge{padding:5px 9px;border-radius:99px;font-size:10px;font-weight:900}.pass{background:#0d382e;color:var(--good)}.fail{background:#3d1821;color:var(--bad)}.ready{background:#25344a;color:#a9bdd6}
 .tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);font-size:12px}th{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em}
 .note{color:var(--muted);font-size:10px;line-height:1.5;margin-top:13px}
+.batch{margin-top:16px}
+.batch-list{display:grid;gap:14px;margin-top:14px}.batch-item{background:#0b1727;border:1px solid var(--line);padding:16px;border-radius:12px}
+.batch-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}.batch-heading strong{font-size:14px}.batch-heading .note{margin:4px 0 0}
+.batch-progress{height:6px;background:#17273b;border-radius:99px;overflow:hidden;margin-top:12px}.batch-progress i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.mcb-visuals{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin-top:16px}
+.visual-panel{min-width:0;background:#091523;border:1px solid var(--line);border-radius:10px;padding:12px}
+.visual-title{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-bottom:9px}
+.mcb-wave,.supply-diagram{display:block;width:100%;height:auto}
+.visual-caption{font-size:10px;line-height:1.5;color:var(--muted);margin-top:7px}
+.empty{color:var(--muted);text-align:center;padding:20px;font-size:12px}
+.remove-item{border:1px solid var(--line);border-radius:7px;padding:7px 10px;background:#18283e;color:var(--text);cursor:pointer}.remove-item:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.safety{display:none}.nav{margin-top:18px;grid-template-columns:repeat(3,1fr)}.setup{grid-template-columns:1fr}.main{padding:17px}.form{grid-template-columns:1fr}}
+@media(max-width:700px){.mcb-visuals{grid-template-columns:1fr}}
+@media(max-width:600px){.actions{flex-wrap:wrap}.batch-item{padding:12px}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
   <div class="logo">MCB<span>-SHIELD</span></div>
-  <div class="team">PARADOX • DIGITAL TWIN</div>
+  <div class="team">DIGITAL TWIN</div>
   <div class="nav">
     <button class="active">Dashboard</button>
     <button onclick="document.getElementById('setup').scrollIntoView({behavior:'smooth'})">Test Setup</button>
@@ -62,7 +97,7 @@ select:focus,input:focus{border-color:var(--accent)}
 
 <main class="main">
   <div class="top">
-    <div><h1>Automated MCB Test Simulator</h1><div class="sub">IEC-inspired digital demonstration • Household & Commercial scenarios</div></div>
+    <div><h1>MCB Shield — Automated MCB Test Simulator</h1><div class="sub">Interactive MCB digital twin • Household & Commercial scenarios</div></div>
     <div class="status"><span class="dot"></span>ONLINE SIMULATOR</div>
   </div>
 
@@ -88,40 +123,43 @@ select:focus,input:focus{border-color:var(--accent)}
         <div class="field"><label>APPLIED VOLTAGE</label>
           <select id="voltage"></select>
         </div>
+        <div class="field"><label>BATCH PROCESSING</label>
+          <select id="processingMode"><option value="parallel">Concurrent</option><option value="sequential">Sequential</option></select>
+        </div>
         <div class="field"><label>TEST SUBJECT ID</label>
-          <input id="testId" value="T-001">
+          <input id="testId" value="T-001" maxlength="40">
         </div>
         <div class="field"><label>SIMULATION PROFILE</label>
           <select id="profile"><option>Standard Fault</option><option>Fast Trip</option><option>Severe Fault</option></select>
         </div>
       </div>
       <div class="actions">
-        <button class="btn primary" id="start" onclick="runTest()">START TEST</button>
-        <button class="btn secondary" onclick="resetTest()">RESET</button>
+        <button class="btn secondary" id="addToBatch" onclick="addToBatch()">ADD MCB TO BATCH</button>
+        <button class="btn primary" id="start" onclick="runBatch()">RUN MCB BATCH</button>
+        <button class="btn secondary" id="clearBatch" onclick="clearBatch()">CLEAR BATCH</button>
       </div>
     </div>
 
     <div class="panel">
-      <div class="eyebrow">02 • LIVE READINGS</div>
+      <div class="eyebrow">02 • BATCH OVERVIEW</div>
       <div class="title">Simulation output</div>
       <div class="readings">
         <div class="metric"><small>BUILDING</small><strong id="outBuilding">Household</strong></div>
         <div class="metric"><small>VOLTAGE</small><strong id="outVoltage">230 V</strong></div>
-        <div class="metric"><small>MCB</small><strong id="outMcb">16 A SP</strong></div>
-        <div class="metric"><small>FAULT CURRENT</small><strong id="outCurrent">—</strong></div>
-        <div class="metric"><small>TRIP TIME</small><strong id="outTrip">—</strong></div>
-        <div class="metric"><small>RESULT</small><strong id="outResult">READY</strong></div>
+        <div class="metric"><small>MCBs IN BATCH</small><strong id="outMcb">0</strong></div>
+        <div class="metric"><small>RUNNING</small><strong id="outRunning">0</strong></div>
+        <div class="metric"><small>COMPLETED</small><strong id="outCompleted">0</strong></div>
+        <div class="metric"><small>PASS / FAIL</small><strong id="outResult">0 / 0</strong></div>
       </div>
       <div class="progress"><i id="bar"></i></div>
-      <div class="statusline"><span id="phase">Waiting for test configuration</span><span id="badge" class="badge ready">READY</span></div>
+      <div class="statusline"><span id="phase">Add one or more MCBs to the batch</span><span id="badge" class="badge ready">READY</span></div>
     </div>
   </section>
 
-  <section class="panel wave">
-    <div class="eyebrow">03 • DYNAMIC WAVEFORM</div>
-    <div class="title">Simulated fault current vs time</div>
-    <svg id="chart" viewBox="0 0 1000 330" preserveAspectRatio="none"></svg>
-    <div class="legend"><span>Current (simulated)</span><span>Trip point: <b id="tripLabel">—</b></span><span>Time →</span></div>
+  <section class="panel batch">
+    <div class="eyebrow">03 • MCB BATCH</div>
+    <div class="title">Live test progress by MCB</div>
+    <div id="batchList" class="batch-list"><div class="empty">No MCBs added. Configure a test subject and select “ADD MCB TO BATCH”.</div></div>
   </section>
 
   <section id="history" class="panel" style="margin-top:16px">
@@ -143,7 +181,7 @@ const configs={
  household:{voltages:[120,230,240], ratings:[6,10,16,20,32,40,63]},
  commercial:{voltages:[230,240,400,415], ratings:[16,20,32,40,63]}
 };
-let history=[], running=false, cfg=null;
+let history=[], batch=[], running=false;
 
 const $=id=>document.getElementById(id);
 function populate(){
@@ -153,22 +191,20 @@ function populate(){
   updatePreview();
 }
 function updatePreview(){
-  const b=$('building').value, v=parseInt($('voltage').value), r=parseInt($('rating').value), p=$('poles').value;
+  const b=$('building').value, v=parseInt($('voltage').value);
   $('outBuilding').textContent=b==='household'?'Household':'Commercial';
   $('outVoltage').textContent=v+' V';
-  $('outMcb').textContent=r+' A '+p;
-  drawChart(0);
+  updateOverview();
 }
-function simulatedConfig(){
-  const b=$('building').value, v=parseInt($('voltage').value), r=parseInt($('rating').value);
-  const p=$('profile').value;
+function simulatedConfig(item){
+  const b=item.building, v=item.voltage, r=item.rating, p=item.profile;
   let multiplier=b==='commercial'?1.12:0.92;
   if(p==='Fast Trip') multiplier*=1.06;
   if(p==='Severe Fault') multiplier*=1.20;
   const current=Math.min(9.8, (r/16)*(v/230)*multiplier + 1.25);
   const trip=(p==='Fast Trip'?15.5:p==='Severe Fault'?18.5:21.5) + (r>40?5:0) + (b==='commercial'?2:0);
   const pass=trip<30;
-  return {building:b,voltage:v,rating:r,poles:$('poles').value,current,trip,pass};
+  return {building:b,voltage:v,rating:r,poles:item.poles,profile:p,current,trip,pass};
 }
 function waveValue(t,c,progress){
   if(t>c.trip) return c.current*.12*Math.exp(-(t-c.trip)/7);
@@ -176,67 +212,219 @@ function waveValue(t,c,progress){
   const ripple=.88+.12*Math.sin(t*2.7);
   return c.current*rise*ripple;
 }
-function drawChart(progress=1){
-  const svg=$('chart'), W=1000,H=330,L=62,R=24,T=22,B=45,pw=W-L-R,ph=H-T-B;
-  const c=cfg||{current:5,trip:20};
+function waveformMarkup(item){
+  const W=600,H=190,L=46,R=16,T=18,B=30,pw=W-L-R,ph=H-T-B;
+  const config=item.current===undefined?null:item;
+  const progress=item.progress/100;
   let d='';
-  for(let i=0;i<=220;i++){
-    const t=i/220*40, x=L+t/40*pw;
-    const yv=progress>0 && t/40<=progress ? waveValue(t,c,progress) : 0;
-    const y=T+ph-(yv/Math.max(c.current,1))*ph*.86;
+  for(let i=0;i<=120;i++){
+    const t=i/120*40, x=L+t/40*pw;
+    const yv=config&&t/40<=progress?waveValue(t,config,progress):0;
+    const y=T+ph-(yv/Math.max(config?config.current:1,1))*ph*.82;
     d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)+' ';
   }
-  const tx=L+(c.trip/40)*pw;
-  svg.innerHTML=`
-  <rect x="${L}" y="${T}" width="${pw}" height="${ph}" rx="10" fill="#07111e" stroke="#233650"/>
-  ${[.25,.5,.75].map(q=>`<line x1="${L}" y1="${T+ph*q}" x2="${L+pw}" y2="${T+ph*q}" stroke="#233650"/>`).join('')}
-  <path d="${d}" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
-  <line x1="${tx}" y1="${T}" x2="${tx}" y2="${T+ph}" stroke="#fbbf24" stroke-width="2" stroke-dasharray="8 7"/>
-  <text x="${tx+8}" y="${T+18}" fill="#fbbf24" font-size="13">Trip point</text>
-  <text x="${L}" y="${H-13}" fill="#8fa4bf" font-size="12">0 ms</text>
-  <text x="${L+pw/2-15}" y="${H-13}" fill="#8fa4bf" font-size="12">20 ms</text>
-  <text x="${L+pw-38}" y="${H-13}" fill="#8fa4bf" font-size="12">40 ms</text>
-  <text x="10" y="${T+10}" fill="#8fa4bf" font-size="12">kA</text>`;
+  const tripX=config?L+(config.trip/40)*pw:null;
+  return `<svg class="mcb-wave" viewBox="0 0 ${W} ${H}" role="img" aria-label="Simulated current waveform for MCB ${escapeHtml(item.id)}">
+    <rect x="${L}" y="${T}" width="${pw}" height="${ph}" rx="8" fill="#07111e" stroke="#233650"/>
+    ${[.25,.5,.75].map(q=>`<line x1="${L}" y1="${T+ph*q}" x2="${L+pw}" y2="${T+ph*q}" stroke="#233650"/>`).join('')}
+    <path d="${d}" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+    ${tripX===null?'':`<line x1="${tripX}" y1="${T}" x2="${tripX}" y2="${T+ph}" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 5"/>`}
+    <text x="${L}" y="${H-8}" fill="#8fa4bf" font-size="11">0 ms</text>
+    <text x="${L+pw/2-15}" y="${H-8}" fill="#8fa4bf" font-size="11">20 ms</text>
+    <text x="${L+pw-35}" y="${H-8}" fill="#8fa4bf" font-size="11">40 ms</text>
+    <text x="5" y="${T+8}" fill="#8fa4bf" font-size="11">kA</text>
+    ${config?`<text x="${Math.min(tripX+5,W-92)}" y="${T+13}" fill="#fbbf24" font-size="10">Trip ${config.trip.toFixed(1)} ms</text>`:''}
+  </svg>`;
 }
-function setPhase(text,pct){
-  $('phase').textContent=text;$('bar').style.width=pct+'%';
+function supplyDiagramMarkup(item){
+  const conductors={
+    SP:[['L','Live','#38bdf8'],['N','Neutral','#8fa4bf']],
+    DP:[['L','Live','#38bdf8'],['N','Neutral','#8fa4bf']],
+    TP:[['L1','Phase 1','#38bdf8'],['L2','Phase 2','#34d399'],['L3','Phase 3','#fbbf24']],
+    FP:[['L1','Phase 1','#38bdf8'],['L2','Phase 2','#34d399'],['L3','Phase 3','#fbbf24'],['N','Neutral','#8fa4bf']]
+  }[item.poles];
+  const switched=item.poles==='SP'?1:conductors.length;
+  const top=conductors.length===2?65:conductors.length===3?50:38;
+  const spacing=conductors.length===2?54:conductors.length===3?42:36;
+  const bottom=top+(conductors.length-1)*spacing;
+  const wires=conductors.map(([label,description,color],index)=>{
+    const y=top+index*spacing, isSwitched=index<switched;
+    return `<line x1="120" y1="${y}" x2="236" y2="${y}" stroke="${color}" stroke-width="3"/>
+      <line x1="236" y1="${y}" x2="290" y2="${y}" stroke="${color}" stroke-width="3"/>
+      ${isSwitched?`<circle cx="293" cy="${y}" r="3" fill="${color}"/><circle cx="325" cy="${y}" r="3" fill="${color}"/><line x1="296" y1="${y}" x2="322" y2="${y}" stroke="${color}" stroke-width="3"/>`:`<line x1="290" y1="${y}" x2="328" y2="${y}" stroke="${color}" stroke-width="2" stroke-dasharray="4 4"/>`}
+      <line x1="328" y1="${y}" x2="410" y2="${y}" stroke="${color}" stroke-width="3"/>
+      <line x1="410" y1="${y}" x2="520" y2="${y}" stroke="${color}" stroke-width="3"/>
+      <text x="126" y="${y-6}" fill="${color}" font-size="10">${label}</text>
+      <title>${description}${isSwitched?' switched by MCB':' shown as a direct path'}</title>`;
+  }).join('');
+  const diagramHeight=Math.max(150,bottom+42);
+  return `<svg class="supply-diagram" viewBox="0 0 640 ${diagramHeight}" role="img" aria-label="${item.poles} MCB conceptual supply diagram, ${item.voltage} volts">
+    <rect x="14" y="${top-20}" width="106" height="${bottom-top+40}" rx="9" fill="#13233a" stroke="#233650"/>
+    <text x="67" y="${(top+bottom)/2-5}" text-anchor="middle" fill="#edf4ff" font-size="12">AC SUPPLY</text>
+    <text x="67" y="${(top+bottom)/2+13}" text-anchor="middle" fill="#8fa4bf" font-size="11">${item.voltage} V</text>
+    <rect x="236" y="${top-20}" width="174" height="${bottom-top+40}" rx="9" fill="#13233a" stroke="#38bdf8"/>
+    <text x="323" y="${top-7}" text-anchor="middle" fill="#38bdf8" font-size="10">${item.poles} MCB</text>
+    ${wires}
+    <rect x="520" y="${top-20}" width="106" height="${bottom-top+40}" rx="9" fill="#13233a" stroke="#233650"/>
+    <text x="573" y="${(top+bottom)/2-5}" text-anchor="middle" fill="#edf4ff" font-size="12">LOAD</text>
+    <text x="573" y="${(top+bottom)/2+13}" text-anchor="middle" fill="#8fa4bf" font-size="10">protected circuit</text>
+  </svg>`;
 }
-async function runTest(){
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function suggestId(){
+  let number=1, used=new Set([...batch.map(item=>item.id),...history.map(item=>item.id)]);
+  while(used.has('T-'+String(number).padStart(3,'0')))number++;
+  return 'T-'+String(number).padStart(3,'0');
+}
+function addToBatch(){
   if(running)return;
-  running=true;
-  cfg=simulatedConfig();
-  const id=$('testId').value.trim()||'T-'+String(history.length+1).padStart(3,'0');
-  $('start').disabled=true;$('start').textContent='TEST RUNNING…';
-  $('outCurrent').textContent=cfg.current.toFixed(2)+' kA';
-  $('outTrip').textContent=cfg.trip.toFixed(1)+' ms';
-  $('tripLabel').textContent=cfg.trip.toFixed(1)+' ms';
-  const steps=[['SAFETY CHECK',12],['VOLTAGE CONFIGURED',28],['READY',42],['FAULT SIMULATED',62],['DATA CAPTURE',80],['ANALYSIS',94],[cfg.pass?'PASS':'FAIL',100]];
-  for(const [label,pct] of steps){
-    setPhase(label,pct);
-    drawChart(pct/100);
-    await new Promise(r=>setTimeout(r,650));
+  const id=$('testId').value.trim()||suggestId();
+  if(batch.some(item=>item.id===id)){
+    alert('Each MCB in the current batch must have a unique test subject ID.');
+    $('testId').focus();
+    return;
   }
-  $('outResult').textContent=cfg.pass?'PASS':'FAIL';
-  $('badge').textContent=cfg.pass?'PASS':'FAIL';
-  $('badge').className='badge '+(cfg.pass?'pass':'fail');
-  history.unshift({time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),id,
-    building:cfg.building==='household'?'Household':'Commercial',mcb:cfg.rating+' A '+cfg.poles,
-    voltage:cfg.voltage+' V',current:cfg.current.toFixed(2)+' kA',trip:cfg.trip.toFixed(1)+' ms',pass:cfg.pass});
-  renderHistory();
-  running=false;$('start').disabled=false;$('start').textContent='START TEST';
+  batch.push({
+    id,building:$('building').value,voltage:parseInt($('voltage').value),rating:parseInt($('rating').value),
+    poles:$('poles').value,profile:$('profile').value,status:'Queued',progress:0,phase:'Queued'
+  });
+  $('testId').value=suggestId();
+  renderBatch();
+  updateOverview();
 }
-function resetTest(){
+function removeBatchItem(index){
   if(running)return;
-  cfg=null;$('outCurrent').textContent='—';$('outTrip').textContent='—';$('outResult').textContent='READY';
-  $('badge').textContent='READY';$('badge').className='badge ready';$('tripLabel').textContent='—';setPhase('Waiting for test configuration',0);drawChart(0);
+  batch.splice(index,1);
+  renderBatch();
+  updateOverview();
+}
+function clearBatch(){
+  if(running)return;
+  batch=[];
+  renderBatch();
+  updateOverview();
+  $('phase').textContent='Add one or more MCBs to the batch';
+  $('badge').textContent='READY';
+  $('badge').className='badge ready';
+  $('bar').style.width='0%';
+}
+function updateOverview(){
+  const completed=batch.filter(item=>item.status==='PASS'||item.status==='FAIL').length;
+  const passCount=batch.filter(item=>item.status==='PASS').length;
+  const failCount=batch.filter(item=>item.status==='FAIL').length;
+  $('outMcb').textContent=batch.length;
+  $('outRunning').textContent=batch.filter(item=>item.status==='Running').length;
+  $('outCompleted').textContent=completed;
+  $('outResult').textContent=passCount+' / '+failCount;
+  const progress=batch.length?batch.reduce((total,item)=>total+(item.status==='PASS'||item.status==='FAIL'?100:item.progress),0)/batch.length:0;
+  $('bar').style.width=progress+'%';
+  if(running){
+    const queued=batch.filter(item=>item.status==='Queued').length;
+    $('phase').textContent=`Processing ${batch.length-queued} of ${batch.length} MCBs${queued?' • '+queued+' queued':''}`;
+    $('badge').textContent='RUNNING';
+    $('badge').className='badge ready';
+  }else if(batch.length){
+    const queued=batch.filter(item=>item.status==='Queued').length;
+    $('phase').textContent=queued?`${queued} MCB${queued===1?'':'s'} queued for testing`:'Batch complete';
+    $('badge').textContent=queued?'QUEUED':'COMPLETE';
+    $('badge').className='badge '+(queued?'ready':failCount?'fail':'pass');
+  }
+  $('start').disabled=running||!batch.some(item=>item.status==='Queued');
+  $('clearBatch').disabled=running||!batch.length;
+}
+function renderBatch(){
+  if(!batch.length){
+    $('batchList').innerHTML='<div class="empty">No MCBs added. Configure a test subject and select “ADD MCB TO BATCH”.</div>';
+    updateOverview();
+    return;
+  }
+  $('batchList').innerHTML=batch.map((item,index)=>{
+    const outcome=item.status==='PASS'?'pass':item.status==='FAIL'?'fail':'ready';
+    const graphCaption=item.current===undefined
+      ?'Waveform will appear here when this MCB starts.'
+      :`Simulated fault current: ${item.current.toFixed(2)} kA • Trip point: ${item.trip.toFixed(1)} ms`;
+    const conductorCaption=item.poles==='SP'
+      ?'Live passes through the MCB; neutral is shown as a direct path.'
+      :`${item.poles} poles switch ${item.poles==='DP'?'both conductors':item.poles==='FP'?'all phases and neutral':'all three phases'}.`;
+    return `<div class="batch-item">
+      <div class="batch-heading">
+        <div><strong>MCB ${escapeHtml(item.id)}</strong><div class="note">${item.rating} A ${escapeHtml(item.poles)} • ${item.voltage} V • ${item.building==='household'?'Household':'Commercial'} • ${escapeHtml(item.profile)}</div></div>
+        <div><span class="badge ${outcome}">${escapeHtml(item.status.toUpperCase())}</span> <button class="remove-item" onclick="removeBatchItem(${index})" ${running?'disabled':''} aria-label="Remove ${escapeHtml(item.id)}">×</button></div>
+      </div>
+      <div class="batch-progress" aria-label="Test progress ${item.progress}%"><i style="width:${item.progress}%"></i></div>
+      <div class="statusline"><span>${escapeHtml(item.phase)}</span><span>${item.progress}%</span></div>
+      <div class="mcb-visuals">
+        <div class="visual-panel">
+          <div class="visual-title">THIS MCB'S SIMULATED CURRENT</div>
+          ${waveformMarkup(item)}
+          <div class="visual-caption">${graphCaption}</div>
+        </div>
+        <div class="visual-panel">
+          <div class="visual-title">SUPPLY → MCB → PROTECTED LOAD</div>
+          ${supplyDiagramMarkup(item)}
+          <div class="visual-caption">${conductorCaption} Conceptual simulation diagram only; not installation wiring guidance.</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateOverview();
+}
+function setControlsDisabled(disabled){
+  ['building','poles','rating','voltage','processingMode','testId','profile','addToBatch'].forEach(id=>$(id).disabled=disabled);
+  $('clearBatch').disabled=disabled||!batch.length;
+}
+async function simulateItem(item){
+  const config=simulatedConfig(item);
+  Object.assign(item,{current:config.current,trip:config.trip,pass:config.pass,status:'Running',progress:0,phase:'Starting'});
+  const steps=[['SAFETY CHECK',12],['VOLTAGE CONFIGURED',28],['READY',42],['FAULT SIMULATED',62],['DATA CAPTURE',80],['ANALYSIS',94],[config.pass?'PASS':'FAIL',100]];
+  for(const [label,pct] of steps){
+    item.phase=label;
+    item.progress=pct;
+    renderBatch();
+    await new Promise(resolve=>setTimeout(resolve,450));
+  }
+  item.status=config.pass?'PASS':'FAIL';
+  item.phase=item.status;
+  item.progress=100;
+  history.unshift({
+    time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}),id:item.id,
+    building:item.building==='household'?'Household':'Commercial',mcb:item.rating+' A '+item.poles,
+    voltage:item.voltage+' V',current:item.current.toFixed(2)+' kA',trip:item.trip.toFixed(1)+' ms',pass:item.pass
+  });
+  renderBatch();
+  renderHistory();
+}
+async function runBatch(){
+  if(running)return;
+  const pending=batch.filter(item=>item.status==='Queued');
+  if(!pending.length)return;
+  running=true;
+  setControlsDisabled(true);
+  $('start').textContent=$('processingMode').value==='parallel'?'RUNNING CONCURRENTLY…':'RUNNING SEQUENTIALLY…';
+  updateOverview();
+  try{
+    if($('processingMode').value==='parallel'){
+      await Promise.all(pending.map(simulateItem));
+    }else{
+      for(let index=0;index<pending.length;index++)await simulateItem(pending[index],index);
+    }
+  }finally{
+    running=false;
+    setControlsDisabled(false);
+    $('start').textContent='RUN MCB BATCH';
+    renderBatch();
+  }
 }
 function renderHistory(){
-  $('historyBody').innerHTML=history.length?history.map(x=>`<tr><td>${x.time}</td><td>${x.id}</td><td>${x.building}</td><td>${x.mcb}</td><td>${x.voltage}</td><td>${x.current}</td><td>${x.trip}</td><td><span class="badge ${x.pass?'pass':'fail'}">${x.pass?'PASS':'FAIL'}</span></td></tr>`).join(''):`<tr><td colspan="8" style="color:#8fa4bf;text-align:center">No simulations completed.</td></tr>`;
+  $('historyBody').innerHTML=history.length?history.map(item=>`<tr><td>${escapeHtml(item.time)}</td><td>${escapeHtml(item.id)}</td><td>${escapeHtml(item.building)}</td><td>${escapeHtml(item.mcb)}</td><td>${escapeHtml(item.voltage)}</td><td>${escapeHtml(item.current)}</td><td>${escapeHtml(item.trip)}</td><td><span class="badge ${item.pass?'pass':'fail'}">${item.pass?'PASS':'FAIL'}</span></td></tr>`).join(''):`<tr><td colspan="8" style="color:#8fa4bf;text-align:center">No simulations completed.</td></tr>`;
 }
 $('building').addEventListener('change',populate);
 $('voltage').addEventListener('change',updatePreview);
 $('rating').addEventListener('change',updatePreview);
 $('poles').addEventListener('change',updatePreview);
+renderBatch();
 populate();
 </script>
 </body>
